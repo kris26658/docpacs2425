@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hello <%= user.fb_name %>!</h1>
+    <form action="/profile" method="POST">
+
+        <label for="checkbox">here is checkbox: </label>
+        <input type="checkbox" name="checkbox" value="checked" <%= (user.profile_checked === 'true') ? 'checked' : '' %>>
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
