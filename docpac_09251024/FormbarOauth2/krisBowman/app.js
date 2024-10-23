@@ -1,5 +1,5 @@
 //In terminal:
-//to install required modules: "npm i sqlite3 express ejs"
+//to install required modules: "npm i ejs express sqlite3 jsonwebtoken express-session"
 //to start the server: "node app.js"
 
 /*---------
@@ -9,7 +9,6 @@ HTTP Server
 //add required modules
 const express = require("express");
 const sqlite3 = require("sqlite3");
-const crypto = require("crypto");
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
 
@@ -21,15 +20,18 @@ app.use(express.urlencoded({ extended: true })); //encode url
 const PORT = 1000; //set port number
 
 app.use(session({
-    secret: "Secret hehe",
+    secret: "secretHere",
     resave: false,
     saveUninitialized: false
 }));
 
 function isAuthenticated(req, res, next) {
     if (req.session.user) next()
-    else res.redirect("/login")
+    else res.redirect("/login?redirectURL=${}")
 };
+
+const FBJS_URL = 'http://172.16.3.212:420'; //oauth from formbar
+const THIS_URL = 'http://localhost:1000/login' //redirect back to login
 
 const db = new sqlite3.Database("data/database.db", (err) => {
     if (err) {
@@ -42,63 +44,52 @@ const db = new sqlite3.Database("data/database.db", (err) => {
 });
 
 app.get("/", (req, res) => {
-    res.render("login");
+    res.render("index");
 });
 
-app.post("/login", (req, res) => {
-    if (req.body.user && req.body.email && req.body.pass) {
-        db.get("SELECT * FROM users WHERE username=?;", req.body.user, (err, row) => {
+app.get('/login', (req, res) => {
+    console.log(req.query.token)
+    if (req.query.token) {
+        let tokenData = jwt.decode(req.query.token)
+        req.session.token = tokenData
+        req.session.user = tokenData.username
+        req.session.uid = tokenData.id
+        //check if user is in the database
+        db.get("SELECT * FROM users WHERE fb_name=?;", req.session.user, (err, row) => {
             if (err) {
-                console.log(err);
-                res.send("There was an error:\n" + err);
+                res.render("error", {error: "Selection error."});
             } else if (!row) {
-                //Create a new salt for this user
-                const salt = crypto.randomBytes(16).toString("hex");
-
-                //Use the salt to "hash" the password
-                crypto.pbkdf2(req.body.pass, salt, 1000, 64, "sha512", (err, derivedKey) => {
+                db.run("INSERT INTO users(fb_name, fb_id, profile_checked) VALUES(?, ?, ?);", [req.session.user, req.session.uid, null], (err) => {
                     if (err) {
-                        res.send("Error hashing password: " + err);
+                        res.render("error", {error: "Insertion error."});
                     } else {
-                        const hashedPassword = derivedKey.toString("hex");
-                        
-                        db.run("INSERT INTO users (username, email, password, salt) VALUES (?, ?, ?, ?);", [req.body.user, req.body.email, hashedPassword, salt], (err) => {
-                            if (err) {
-                                res.send("Database error: \n" + err);
-                            } else{
-                                res.send("Created new user");
-                            };
-                        });
-                    };
-                });
-            } else if (row) {
-                //Compare stored password with provided password
-                crypto.pbkdf2(req.body.pass, row.salt, 1000, 64, "sha512", (err, derivedKey) => {
-                    if (err) {
-                        res.send("Error hashing password: " + err);
-                    } else {
-                        const hashedPassword = derivedKey.toString("hex");
-                        
-                        if (row.password === hashedPassword) {
-                            req.session.user = req.body.user;
-                            res.redirect("/home");
-                        } else {
-                            res.send("Incorrect Password.")
-                        };
+                        console.log("Created new user");
                     };
                 });
             };
         });
+        //redirect to user's profile
+        res.redirect('/profile');
     } else {
-        res.send("Please enter a username, email, and password");
+        res.redirect(`${FBJS_URL}/oauth?redirectURL=${THIS_URL}`);
     };
 });
 
-app.get("/home", isAuthenticated, (req, res) => {
+app.get("/profile", isAuthenticated, (req, res) => {
     try {
-        res.render("home", { user: req.session.user })
+        res.render("profile", { user: req.session.user })
     }
     catch (error) {
-        res.send(error.message)
+        res.render("error", {error: "You are not logged in."});
     }
+});
+
+app.post("/profile", (req, res) => {
+    db.get("UPDATE users SET profile_checked=? WHERE fb_id=?", [req.body.cb, req.session.uid], (err, row) => {
+        if (err) {
+            res.render("error", {error: "Selection error."});
+        } else {
+            console.log("Selection successful");
+        };
+    });
 });
