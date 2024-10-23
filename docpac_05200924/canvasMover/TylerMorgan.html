@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div id="div"></div>
+ 
+    <canvas id="myCanvas" width="1200" height="600" style="border:1px solid #000000;"></canvas>
+</body>
+<script>
+    //tell the user that they are using the arrow keys
+    document.getElementById('div').innerHTML = "you are using WASD keys to move.";
+ 
+ //make a new player object
+ var player = {
+     x: 0,
+     y: 0,
+     w: 300,
+     h: 200,
+     img: new Image()
+ };
+
+ //set the image of the player
+ player.img.src = "man.png";
+
+ //set up canvas
+ var canvas = document.getElementById('myCanvas');
+ var ctx = canvas.getContext('2d');
+
+ var speed = 5;
+ var keys = {};
+
+ //check for key presses
+ window.addEventListener('keydown', function (e) {
+     keys[e.key] = true;
+ });
+
+ window.addEventListener('keyup', function (e) {
+     keys[e.key] = false;
+ });
+
+ //moving the player
+ function move() {
+    if (keys['w']) {
+         player.y -= speed;
+     }
+     if (keys['s']) {
+         player.y += speed;
+     }
+     if (keys['a']) {
+         player.x -= speed;
+     }
+     if (keys['d']) {
+         player.x += speed;
+     }
+     //check if the player is out of bounds of the canvas
+     if (player.x + player.w > canvas.width) {
+         player.x = canvas.width - player.w;
+     }
+     if (player.y + player.h > canvas.height) {
+         player.y = canvas.height - player.h;
+     }
+     if (player.x < 0) {
+         player.x = 0;
+     }
+     if (player.y < 0) {
+         player.y = 0;
+     }
+
+     requestAnimationFrame(move);
+ }
+ move();
+
+ function update() {
+
+     //clear the canvas
+     ctx.clearRect(0, 0, canvas.width, canvas.height);
+     //draw the player
+     ctx.drawImage(player.img, player.x, player.y, player.w, player.h);
+
+
+     requestAnimationFrame(update);
+ }
+ update()
+</script>
+
+</html>

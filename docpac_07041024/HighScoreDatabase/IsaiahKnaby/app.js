@@ -5,7 +5,7 @@ const PORT = 3000;
 
 app.set('view engine', 'ejs');
 
-let db = new sqlite3.Database('data/basesOfData.db', (err) => {
+let db = new sqlite3.Database('data/data.db', (err) => {
     if (err) {
         console.error(err);
     } else {
@@ -28,13 +28,14 @@ app.get("/errors", (req, res) => {
 
 app.get("/highscore", (req, res) => {
     try {
-        db.all("SELECT * FROM basesOfData ORDER BY score DESC", (err, rows) => {
+        db.all("SELECT * FROM users ORDER BY score DESC", (err, rows) => {
             if (err) {
                 console.error(err);
             } else {
                 rows = rows.slice(0, 10);
-                res.render('highscore', { basesOfData: rows });
+                res.render('highscore', { users: rows });
             }
+            
         });
     } catch (err) {
         console.error('error', { error: err.message });
@@ -45,10 +46,16 @@ app.post("/highscore", (req, res) => {
     try {
         let name = req.body.name;
         let score = req.body.score;
-        db.run("INSERT INTO basesOfData (name, score) VALUES (?, ?)", [name, score], (err) => {
+        if (score === null || name === null) {
+            console.error('Score or Userame is null.')
+        };
+        db.run(
+            'INSERT INTO users (ip, username, score) VALUES (?, ?, ?)',
+            [req.ip, name, score], 
+            (err) => {
             if (err) {
-                console.error(err);
-            }
+                console.error(err)
+            };
         });
     } catch (err) {
         console.error('error', { error: err.message });

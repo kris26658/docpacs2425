@@ -1,86 +1,130 @@
+
 <!DOCTYPE html>
+<!-- /* 1.	Create a new html file called “FirstnameLastname.html” (your name) and save it in the “canvasMover” folder in this DocPac. If there is no folder with this name, create it.
+2.	In the html file, create a canvas element that is 800 pixels wide and 600 pixels tall */ -->
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Canvas Mover</title>
 </head>
+
 
 <body>
     <style>
-        #myCanvas {
-            border: solid 1px;
-            color: red
+        #canvas {
+            height: 600px;
+            width: 800px;
+            border-style: solid;
+            border-color: blueviolet;
         }
+
     </style>
-    <canvas class="border-glow" id="myCanvas" width="800" height="600">
+    <canvas id="canvas">
 
     </canvas>
     <script>
-        const player = {
-            x: 100,
-            y: 100,
-            w: 30,
-            h: 30,
-            img: null
 
-        }
+//         3.	Create a javascript object to represent the player’s avatar with the properties x, y, w, h, img.
+// a.	x and y represent the horizontal and vertical position of the top-left corner of the player’s avatar.
+// b.	w, and h represent the width and height of the player’s avatar
+// c.	img represents the relative file path to the image you will use for player’s avatar
+// i.	download or create an image
+// ii.	try to keep it small
+        const player = new Object();
+        player.x = 100;
+        player.y = 100;
+        player.w = 20;
+        player.h = 20;
+        player.img = new Image()
+        player.img.src = "./blackguy.jpg"
 
-        var canvas = document.getElementById('myCanvas')
-        var charSpeed = 10
-        const ctx = canvas.getContext('2d')
 
-        function loadCharImg() {
-            player.img = new Image()
-            player.img.src = "./blackguy.jpg"
-            player.img.onload = function () {
-                drawPlayer()
-            }
-        }
-        function drawPlayer() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            ctx.fillStyle = 'white'
-            ctx.drawImage(player.img, player.x, player.y, player.w, player.h)
-            ctx.fillStyle = 'black'
-            ctx.font = '20px Arial'
-            ctx.fillText("Control: Gamepad", 10, 20)
-            ctx.fillText(`X: ${player.x.toFixed(2)}, Y: ${player.y.toFixed(2)}`, 10, 40)
-        }
-        window.addEventListener('gamepadconnected', (event) => {
-            console.log('Gamepad connected:', event.gamepad)
-            gameLoop()
-        })
-        function gameLoop() {
-            const gamepads = navigator.getGamepads()
-            const gamepad = gamepads[0]
-            if (gamepad) {
-                player.x += gamepad.axes[0] * charSpeed * 3
-                player.y += gamepad.axes[1] * charSpeed * 3
+        //         4.	Determine if you want to use keyboard, gamepad, or touch controls
+// a.	Set up the program to read up, down, left, right from your chosen control scheme
+// 5.	Determine an input speed for your control scheme from 0 to 1.
+// a.	Gamepads are easy, as the joysticks already measure a float value which you can multiply by
+// b.	Touch controls can read the distance of the touch from a center point to achieve a gamepad-like float value, or have touch buttons which act like keys (below)
+// c.	Keys are either on or off
+        const charSpeed = 10
 
-                if (player.x < 0) {
-                    player.x = 0
-                }
-                if (player.x + player.w > canvas.width) {
-                    player.x = canvas.width - player.w
-                }
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext("2d");
+//         6.	Using requestAnimationFrame(), create a function that does the following:
+// a.	If any of the direction controls are being pressed, increase or decrease the appropriate X and Y values of the player for that direction. This can be accomplished by multiplying the user’s control input amount by a set player speed (2 is a good number to start)
+// i.	For example, pushing half-left on a gamepad joystick will make the player change their X value by -0.5*2. Pressing the down key will increase the player Y by 1*2.
+// b.	Do not allow the player’s box to leave the canvas
+// i.	If the x or y is less than 0, make it equal 0
+// ii.	If the x+w or y+h is greater than the canvas width or height, set it to the canvas width - w or the canvas height + h. (respectively)
 
-                if (player.y < 0) {
-                    player.y = 0
-                }
-                if (player.y + player.h > canvas.height) {
-                    player.y = canvas.height - player.h
-                }
-                ctx.fillStyle = 'white'
-                ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-                drawPlayer()
-            }
-                           requestAnimationFrame(gameLoop)
 
-        }
 
-        loadCharImg()
+
+function movement() {
+    const gamepad = navigator.getGamepads();
+    const stickX = gamepad.axes[0];
+    const stickY = gamepad.axes[1];
+
+        if(gamepad[0]) {
+            player.x += stickX * charSpeed * 2;
+            player.y += stickY * charSpeed * 2;
+        
+
+        
+        if(player.x < 0) 
+           player.x =0;
+        
+
+        if(player.y < 0) 
+           player.y = 0;
+        
+
+        if(player.x + player.w >canvas.width) 
+          player.x = canvas.width - player.w;
+        
+
+        if(player.y + player.h > canvas.height) 
+          player.y = canvas.height - player.h;
+
+          drawSprite()
+    }
+    requestAnimationFrame(movement)
+}
+
+
+
+window.addEventListener('gamepadconnected', (event) => {
+            console.log('Gamepad connected:', event.gamepad);
+            movement(); 
+        });
+
+        player.img.onload = function() {
+            drawSprite();
+        };
+        
+
+function drawSprite() {
+    //         c.	Erase the screen by drawing a filled rectangle over the entire canvas.
+// d.	Draw the player’s image at their X and Y location with their width and height
+// e.	If you are using touch controls, you must either draw a box if you are using gamepad-like controls, or four buttons if using key-like controls.
+
+ctx.clearRect(0, 0, canvas.width, canvas.height)
+ctx.fillStyle = 'white';
+ctx.font = "30px serif";
+ctx.fillText("Gamepad", 10, 30);
+ctx.fillText(`X ${player.x}, ${player.y}`, 10,30)
+ctx.drawImage(player.img,player.x,player.y,player.w,player.h)
+
+// f.	In t he top left corner, draw text on the canvas that displays the following:
+// i.	If you chose gamepad, touch, or keyboard
+// ii.	The current X and Y values of the player’s avatar
+}
+
+
+
+
 
     </script>
 </body>

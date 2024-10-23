@@ -29,7 +29,7 @@
 </body>
 <script>
     //CONSTANTS
-    const SWIPE_MIN = 200; //How far you must swipe to trigger a swipe
+    const SWIPE_MIN = 0; //How far you must swipe to trigger a swipe
 
     //SETUP IMAGE
     let swipeImg = document.getElementById('swipeImg');
@@ -87,8 +87,8 @@
         startX = event.touches[0].clientX;
         startY = event.touches[0].clientY;
         //reset the last touch position of each axis to 0
-        lastX = 0;
-        lastY = 0;
+        lastX = [0];
+        lastY = [0];
     }
 
     function move(event) {
@@ -119,33 +119,33 @@
 
     function end(event) {
         //set the end coordinate of each axis to the touch position
-        endX = event.changedtouches[0].clientX;
-        endY = event.changedtouches[0].clientY;
+        endX = event.changedTouches[0].clientX;
+        endY = event.changedTouches[0].clientY;
         //calculate the absolute value of difference between the start touch and the end touch for each axis
-        diffX = Math.abs(startX - endX);
-        diffY = Math.abs(startY - endY);
+        diffX = (startX - endX);
+        diffY = (startY - endY);
         // if the distance from the start to end on the X axis is greater than the minimum swipe distance and
         // the difference of the X axis is greater than the Y axis
-        if(diffX > SWIPE_MIN && diffX > diffY)
+        if(diffX > SWIPE_MIN && Math.abs(diffX) > Math.abs(diffY)) {
             //if the image index is greater than 0
-            if(imgIndex > [0]) {
+            if (imgIndex > 0) {
                 //decrement the image index
                 imgIndex--;
                 //change the image src property to the previous image in the list
                 swipeImg.src = images[imgIndex];
             }
             //else
-            else{
+            else {
             //set the image index to the last image in the list
-            imgIndex = images.length -1;
+            imgIndex = (images.length - 1);
             //change the image src property to the last image in the list
             swipeImg.src = images[imgIndex];
             }
         // else if the distance from the start to end on the X axis is less than the minimum swipe distance and
         // the difference of the X axis is greater than the Y axis
-        else if(diffX < SWIPE_MIN && diffX > diffY) {
+        } else if(diffX < SWIPE_MIN && Math.abs(diffX) > Math.abs(diffY)) {
             //if the image index is less than the length of the image list
-             if(imgIndex < images.length){
+             if(imgIndex < (images.length - 1)){
                 //increment the image index
                 imgIndex++;
                 //change the image src property to the next image in the list
@@ -154,22 +154,22 @@
             //else
             else {
             //reset the image index to 0
-            imgIndex = [0]
+            imgIndex = 0;
             //change the image src property to the first image in the list
             swipeImg.src = images[imgIndex];
             }
         }
         // else if the distance from the start to end on the Y axis is greater than the minimum swipe distance and
         // the difference of the Y axis is greater than the X axis
-        else if(diffY > SWIPE_MIN && diffY > diffX) {
+        else if(diffY > SWIPE_MIN && Math.abs(diffY) > Math.abs(diffX)) {
             //if there is at least one image in the list
             if(images.length > 1) {
                 //remove this image from the list
-                images.splice(imageIndex, 1);
+                images.splice(imgIndex, 1);
                 //if the image index is greater than the length of the image list
-                if(imageIndex > images.length) {
+                if(imgIndex > (images.length - 1)) {
                     //decrement the image index
-                    imageIndex--;
+                    imgIndex--;
                 }
                 //else
                 else {
@@ -182,16 +182,16 @@
         }
         // else if the distance from the start to end on the Y axis is less than the minimum swipe distance and
         // the difference of the Y axis is greater than the X axis
-        else if(diffY < SWIPE_MIN && diffY > diffX) {
+        else if(diffY < SWIPE_MIN && Math.abs(diffY) > Math.abs(diffX)) {
             //add this image to the end of the list
-            images.push(images);
+            images.push(images[imgIndex]);
         }
         //reset the horizontal and vertical position of the image to 0px
         swipeImg.style.left = '0px';
         swipeImg.style.top = '0px';
         //reset the last touch position of each exis to 0
-        lastX = 0;
-        lastY = 0;
+        lastX[0] = 0;
+        lastY[0] = 0;
     }
 
 </script>

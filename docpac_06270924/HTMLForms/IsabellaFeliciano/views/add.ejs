@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #000000;
+            color: #8652da;
+        }
+    </style>
+</head>
+<body>
+    <form action="/add" method="POST">
+        <select name="brand">
+            <option value="Coca Cola">Coca Cola</option>
+            <option value="Fanta">Fanta</option>
+            <option value="Sprite">Sprite</option>
+        </select>
+        <input type="number" min="1" name="quantity">
+        <button type="submit">Order</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>orders</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #000000;
+            color: #8652da;
+        }
+    </style>
+</head>
+<body>
+    <% if(orders) { %>
+        <ol>
+            <% for (order of orders) { %>
+                <li> <%= order.brand %> - <%= order.quantity %> </li>
+            <% } %>
+        </ol>
+    <% } %>
+</body>
+</html>

@@ -2,7 +2,14 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const app = express();
-const db = new sqlite3.Database('./07database.db');
+
+const db = new sqlite3.Database('07database.db', (err) => {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log('we good bruh');
+    }
+});
 
 
 app.set('view engine', 'ejs');

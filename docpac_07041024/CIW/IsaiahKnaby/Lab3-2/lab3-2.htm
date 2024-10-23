@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Lab 3-2</title>
+
+<script type="text/javascript">
+<!--
+
+/******************************************************
+Define a function that takes arguments on function call
+******************************************************/
+  function thing(arg){
+    alert("the argument is: " + arg);
+  }
+/******************************************************
+Define a function that takes returns a value
+******************************************************/
+function thing2(){
+  return "this is the return value";
+}
+
+//-->
+</script>
+
+</head>
+
+<body>
+
+<h3>CIW JavaScript Specialist</h3>
+<hr />
+
+<!-- Add an onclick event handler to call the function -->
+
+<form name="myForm">
+<input type="button" value="Call Function with arguments" onclick="thing('HUR???')"/><br />
+<input type="button" value="Call Function with return" onclick="alert(thing2())"/>
+</form>
+
+</body>
+</html>

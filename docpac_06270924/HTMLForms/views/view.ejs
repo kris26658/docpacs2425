@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orders</title>
+    <title>Document</title>
 </head>
 <body>
-    <% if(orders) { %>
-        <ol>
-            <% for (order of orders) { %>
-                <li> <%= order.brand %> - <%= order.quantity %> </li>
-            <% } %>
-        </ol>
-    <% } %>
+    <h1>nerd stuff</h1>
+    <ul>
+        <% data.forEach(item => { %>
+            <li><%= item.name %>: Q1: <%= item.Q1 %>, Q2: <%= item.Q2 %>, Q3: <%= item.Q3 %></li>
+        <% }) %>
+    </ul>
+    <a href="/">back to the home Page</a> <br>
+    <a href="/add">Go back to Add Page</a>
 </body>
 </html>

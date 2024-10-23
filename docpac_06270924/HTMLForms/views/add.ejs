@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-
 </head>
+
 <body>
-    <form action="/add" method="POST">
-        <select name="Brand">
-            <option value="Pepsi">Coca Cola</option>
-            <option value="Fanta">Fanta</option>
-            <option value="Sprite">Sprite</option>
-        </select>
-        <input type="Number" min="1" name="Quantity">
-        <button type="Submit">Order</button>
+    <form action="/add" method="POST" id="TEST">
+        <label for="name">what is your name</label><br>
+        <input type="text" id="name" name="name"> <br> <br>
+        <label for="Q1">have you mew'd within the last 24 hours?</label> <br>
+        <input type="checkbox" id="Q1" name="Q1"> <br> <br>
+        <label for="Q2">have you watched Patrick Bateman Sigma tiktok edits before?</label> <br>
+        <input type="checkbox" id="Q2" name="Q2"> <br> <br>
+        <label for="Q3">are you an ALPHA?</label> <br>
+        <input type="checkbox" id="Q3" name="Q3"><br><br>
+        <button type="submit">Submit</button>
     </form>
 </body>
+
 </html>

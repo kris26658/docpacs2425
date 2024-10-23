@@ -28,14 +28,23 @@
     </div>
 
     <script>
-        timer = 60
+        timer = 5
         score = 0
         direction = 0
         var scoreBox = document.getElementById('scoreBox');
         setInterval(timerCount, 1000);
         setInterval(directionChange, 2000);
         buttonPressed = false
+        const username = prompt('Whats you username?');
 
+        if (timer <= 0) {
+            fetch('/highscore', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({user: username, score: score})
+                })};
         window.addEventListener('gamepadconnected', (event) => {
             const update = () => {
                 for (const gamepad of navigator.getGamepads()) {
